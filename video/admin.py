@@ -1,3 +1,6 @@
 from django.contrib import admin
 
-# Register your models here.
+from video.models import VideoModel, WatchHistory
+
+admin.site.register(VideoModel)
+admin.site.register(WatchHistory)

@@ -21,4 +21,6 @@ import accounts
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('',include('accounts.urls')),
+    path('video/',include('video.urls')),
+    path('payment/',include('payment.urls')),
 ]
