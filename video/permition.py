@@ -6,3 +6,9 @@ class IsOwner(BasePermission):
         if request.method in ['GET']:
             return True
         return obj.content_creator == request.user
+
+class IsOwnerComment_Rating(BasePermission):
+    def has_object_permission(self, request, view, obj):
+        if request.method in ['GET']:
+            return True
+        return obj.user == request.user

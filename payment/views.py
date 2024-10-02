@@ -81,7 +81,7 @@ class RenewSubscriptionView(generics.UpdateAPIView):
         user = request.user
 
         try:
-            subscription = Subscription.objects.get(user=user, video_id=video_id, is_active=True)
+            subscription = Subscription.objects.get(user=user, video_id=video_id)
         except Subscription.DoesNotExist:
             return Response({"detail": "No active subscription found."}, status=status.HTTP_404_NOT_FOUND)
 
@@ -92,6 +92,7 @@ class RenewSubscriptionView(generics.UpdateAPIView):
             status='completed',
         )
 
+        subscription.is_active = True
         subscription.end_date += timedelta(days=30)
         subscription.save()
 
