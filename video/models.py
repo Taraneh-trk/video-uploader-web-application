@@ -14,6 +14,14 @@ class VideoModel(models.Model):
     def __str__(self):
         return self.title
 
+    @property
+    def comments(self):
+        return Comment.objects.filter(video=self)
+
+    @property
+    def ratings(self):
+        return Rating.objects.filter(video=self)
+
 
 class WatchHistory(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
@@ -43,9 +51,9 @@ class Rating(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     rate = models.IntegerField()
 
-class VideoStatus(models.Model):
-    video = models.OneToOneField(VideoModel,on_delete=models.CASCADE)
-    comments = models.ForeignKey(Comment,on_delete=models.CASCADE)
-    rating = models.FloatField(default=0)
-    view_count = models.IntegerField(default=0)
+# class VideoStatus(models.Model):
+#     video = models.OneToOneField(VideoModel,on_delete=models.CASCADE)
+#     comments = models.ForeignKey(Comment,on_delete=models.CASCADE)
+#     rating = models.FloatField(default=0)
+#     view_count = models.IntegerField(default=0)
 

@@ -26,31 +26,35 @@ class VideoRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
     def retrieve(self, request, *args, **kwargs):
         video = self.get_object()
         user = request.user
+        subscription = None
 
         try:
             subscription = Subscription.objects.get(user=user, video=video)
-            print(subscription)
             if timezone.is_naive(subscription.end_date):
                 subscription.end_date = timezone.make_aware(subscription.end_date)
 
             if subscription.end_date < timezone.now():
                 subscription.is_active = False
                 subscription.save()
+            print(subscription)
 
         except Subscription.DoesNotExist:
             if video.content_creator != user:
                 return Response({"detail": "You need to subscribe to access this video."},
                                 status=status.HTTP_403_FORBIDDEN)
 
-        if not subscription.is_active and video.content_creator != user:
+        if subscription and not subscription.is_active and video.content_creator != user:
             return Response({"detail": "Your subscription has expired. Please renew to access this video."},
                             status=status.HTTP_403_FORBIDDEN)
 
         if user.is_authenticated:
             WatchHistory.objects.get_or_create(user=user, video=video)
 
-        video.view_count+=1
+        video.view_count += 1
+        video.save()
+
         return super().retrieve(request, *args, **kwargs)
+
 
 
 class CommentListCreateAPIView(generics.ListCreateAPIView):
